@@ -53,6 +53,30 @@ Here's a snapshot of the main classes provided by the Cube library:
 Each of these classes comes with thorough documentation, including interface
 details and usage examples.
 
+## Usage Deno
+
+```ts
+import {
+  Buffer,
+  Channel,
+  FQueue,
+  Heap,
+  LFU,
+  LinkedList,
+  LRU,
+  PubSub,
+  Queue,
+  Stack,
+  Trie,
+} from "https://deno.land/x/cube/mod.ts";
+```
+
+## Usage Node
+
+```js
+import * as cube from "@denox/cube";
+```
+
 # Heap
 
 Heap is a data structure that maintains a collection of elements, with the
