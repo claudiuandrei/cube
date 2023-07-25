@@ -53,53 +53,6 @@ Here's a snapshot of the main classes provided by the Cube library:
 Each of these classes comes with thorough documentation, including interface
 details and usage examples.
 
-## Table of Contents
-
-- [Heap](#Heap)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [Trie](#Trie)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [LinkedList](#LinkedList)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [Stack](#Stack)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [Queue](#Queue)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [Buffer](#Buffer)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [FQueue](#FQueue)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [LFU (Least Frequently Used)](#LFU)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [LRU (Least Recently Used)](#LRU)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [PubSub](#PubSub)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-- [Channel](#Channel)
-  - [Use Cases](#Use-Cases)
-  - [Interface Documentation](#Interface-Documentation)
-  - [Examples](#Examples)
-
 # Heap
 
 Heap is a data structure that maintains a collection of elements, with the
