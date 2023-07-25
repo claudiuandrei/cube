@@ -35,19 +35,23 @@ Here's a snapshot of the main classes provided by the Cube library:
    which is ideal for scenarios where efficient insertions and deletions are
    required.
 
-4. **Stack**: This class offers a stack data structure, following the LIFO (Last
+4. **CircularList**: This class implements a circular linked list, which is
+   useful in various applications like computer system resource allocation,
+   navigation systems, and time-sharing problems in operating systems.
+
+5. **Stack**: This class offers a stack data structure, following the LIFO (Last
    In First Out) principle. It is commonly used in scenarios like parsing,
    backtracking algorithms, and function call stacks.
 
-5. **Queue, Buffer, and FQueue**: These classes provide different types of queue
+6. **Queue, Buffer, and FQueue**: These classes provide different types of queue
    data structures, supporting use cases from basic FIFO operations to
    frequency-based queueing.
 
-6. **LFU and LRU**: These classes implement LFU (Least Frequently Used) and LRU
+7. **LFU and LRU**: These classes implement LFU (Least Frequently Used) and LRU
    (Least Recently Used) caching algorithms, which are useful for optimizing
    memory use in applications that deal with large amounts of data.
 
-7. **PubSub and Channel**: These classes facilitate the Publish-Subscribe
+8. **PubSub and Channel**: These classes facilitate the Publish-Subscribe
    messaging pattern, which is widely used in event-driven architectures.
 
 Each of these classes comes with thorough documentation, including interface
@@ -59,6 +63,7 @@ details and usage examples.
 import {
   Buffer,
   Channel,
+  CircularList,
   FQueue,
   Heap,
   LFU,
@@ -522,6 +527,154 @@ In this example, a new linked list is created and elements are added to it.
 Then, the value of a specific element is retrieved, and the reference is moved
 to the next element. The list is then iterated over, and finally, all elements
 are removed from the list.
+
+# CircularList
+
+The `CircularList` class in this TypeScript file is an implementation of a
+circular linked list. A circular linked list is a linked list where all nodes
+are connected to form a circle. There is no NULL at the end. A circular linked
+list can be a singly circular linked list or doubly circular linked list.
+
+## Use Cases
+
+Circular linked lists are used in various applications, including:
+
+- **Computer system resources allocation:** In systems where multiple processes
+  share resources in a circular manner.
+- **Navigation systems:** Circular linked lists can represent places to visit in
+  a specific order, allowing for cycling through the list.
+- **Operating Systems:** Used in the implementation of time-sharing problems,
+  where the currently running process is pushed back to the end of the queue
+  after the time quantum expires.
+
+## Interface Documentation
+
+### Constructor
+
+```typescript
+constructor(entries?: readonly T[])
+```
+
+Creates a new `CircularList`. The `entries` parameter is an optional array to
+initialize the circular list.
+
+### push
+
+```typescript
+push(value: T): this
+```
+
+Adds a new node with the given value to the circular list.
+
+### pop
+
+```typescript
+pop(): T | undefined
+```
+
+Removes the node from the circular list that the internal cursor points to and
+returns its value. Returns `undefined` if the list is empty.
+
+### peek
+
+```typescript
+peek(): T | undefined
+```
+
+Returns the value of the node that the internal cursor points to without
+removing it from the list. Returns `undefined` if the list is empty.
+
+### clear
+
+```typescript
+clear(): void
+```
+
+Clears the circular list.
+
+### rotate
+
+```typescript
+protected rotate(): this
+```
+
+Rotates the list by moving the cursor to the next node.
+
+### size
+
+```typescript
+get size(): number
+```
+
+Returns the number of nodes in the list.
+
+### Symbol.iterator, keys, values
+
+```typescript
+*[Symbol.iterator](): IterableIterator<T>
+*keys(): IterableIterator<T>
+*values(): IterableIterator<T>
+```
+
+These methods return an iterator that yields all values in the list in the order
+they are linked in the list.
+
+### entries
+
+```typescript
+*entities(): IterableIterator<[T, T]>
+```
+
+Returns an iterator that yields all key-value pairs in the list, where both the
+key and value are the value of the node.
+
+### forEach
+
+```typescript
+forEach(callbackFn: (value: T, key: T, map: this) => void, thisArg?: unknown): void
+```
+
+Executes a provided function once for each node in the list.
+
+## Examples
+
+```typescript
+import CircularList from "./circular";
+
+// Create a new CircularList instance
+const list = new CircularList<number>();
+
+// Push elements into the list
+list.push(1).push(2).push(3);
+
+// Print the size of the list
+console.log(list.size); // Outputs: 3
+
+// Peek at the next element to be popped
+console.log(list.peek()); // Outputs: 1
+
+// Pop the next element
+console.log(list.pop()); // Outputs: 1
+
+// Print the size of the list
+console.log(list.size); // Outputs: 2
+
+// Iterate over the list
+for (const value of list) {
+  console.log(value); // Outputs: 2, 3
+}
+
+// Clear the list
+list.clear();
+
+// Print the size of the list
+console.log(list.size); // Outputs: 0
+```
+
+In this example, we first create a `CircularList` and push some elements into
+it. Then, we peek at and pop the next element, and print the size of the list.
+After that, we iterate over the list and print each value. Finally, we clear the
+list and print its size.
 
 # Stack
 

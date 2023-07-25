@@ -1,6 +1,7 @@
 import Heap from "./heap.ts";
 import Trie from "./trie.ts";
 import LinkedList from "./list.ts";
+import CircularList from "./circular.ts";
 import Stack from "./stack.ts";
 import Queue from "./queue.ts";
 import Buffer from "./buffer.ts";
@@ -13,6 +14,7 @@ import Channel from "./channel.ts";
 export {
   Buffer,
   Channel,
+  CircularList,
   FQueue,
   Heap,
   LFU,
