@@ -58,7 +58,7 @@ class Queue<T> {
   }
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const [value] of this.#store[Symbol.iterator]()) {
+    for (const [value] of this.#store) {
       yield value;
     }
   }
@@ -72,7 +72,7 @@ class Queue<T> {
   }
 
   *entries(): IterableIterator<[T, T]> {
-    for (const value of this[Symbol.iterator]()) {
+    for (const value of this) {
       yield [value, value];
     }
   }

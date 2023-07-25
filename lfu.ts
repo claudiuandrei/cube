@@ -63,7 +63,7 @@ class LFU<K, V> {
   }
 
   *[Symbol.iterator](): IterableIterator<[K, V]> {
-    for (const key of this.#queue[Symbol.iterator]()) {
+    for (const key of this.#queue) {
       yield [key, this.#store.get(key)!];
     }
   }
@@ -73,7 +73,7 @@ class LFU<K, V> {
   }
 
   *values(): IterableIterator<V> {
-    for (const key of this.#queue[Symbol.iterator]()) {
+    for (const key of this.#queue) {
       yield this.#store.get(key)!;
     }
   }

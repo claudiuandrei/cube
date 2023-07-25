@@ -52,7 +52,7 @@ class Stack<T> {
   }
 
   *entries(): IterableIterator<[T, T]> {
-    for (const value of this[Symbol.iterator]()) {
+    for (const value of this) {
       yield [value, value];
     }
   }

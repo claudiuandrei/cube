@@ -112,7 +112,7 @@ class Trie<K, V> {
     return node;
   }
 
-  set(keys: K[], value: V): void {
+  set(keys: K[], value: V): this {
     // Start at the head
     let node = this.#head;
 
@@ -137,6 +137,9 @@ class Trie<K, V> {
 
     // Set the value on the value
     node[1] = value;
+
+    // Chain
+    return this;
   }
 
   get(keys: K[]): V | undefined {
@@ -233,13 +236,13 @@ class Trie<K, V> {
   }
 
   *keys(): IterableIterator<K[]> {
-    for (const [key] of this[Symbol.iterator]()) {
+    for (const [key] of this) {
       yield key;
     }
   }
 
   *values(): IterableIterator<V> {
-    for (const [, value] of this[Symbol.iterator]()) {
+    for (const [, value] of this) {
       yield value;
     }
   }

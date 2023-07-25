@@ -26,8 +26,7 @@ Deno.test("Trie Insertion - insert into empty trie", () => {
 
 Deno.test("Trie Insertion - insert multiple values", () => {
   const trie = new Trie<string, number>();
-  trie.set(["a"], 1);
-  trie.set(["b"], 2);
+  trie.set(["a"], 1).set(["b"], 2);
   assertEquals(trie.size, 2);
   assertEquals(trie.get(["a"]), 1);
   assertEquals(trie.get(["b"]), 2);
@@ -35,8 +34,7 @@ Deno.test("Trie Insertion - insert multiple values", () => {
 
 Deno.test("Trie Insertion - insert duplicate keys with different values", () => {
   const trie = new Trie<string, number>();
-  trie.set(["a"], 1);
-  trie.set(["a"], 2);
+  trie.set(["a"], 1).set(["a"], 2);
   assertEquals(trie.size, 1);
   assertEquals(trie.get(["a"]), 2);
 });
@@ -147,8 +145,7 @@ Deno.test("Trie Match - match with non-existing prefix", () => {
 
 Deno.test("Trie Match - match with existing prefix", () => {
   const trie = new Trie<string, number>();
-  trie.set(["a"], 1);
-  trie.set(["a", "b"], 2);
+  trie.set(["a"], 1).set(["a", "b"], 2);
   const entries = [...trie.match(["a", "b"])];
   assertEquals(entries.length, 2);
   assertEquals(entries[0], [["a"], 1]);
@@ -157,9 +154,7 @@ Deno.test("Trie Match - match with existing prefix", () => {
 
 Deno.test("Trie Match - match with common prefix", () => {
   const trie = new Trie<string, number>();
-  trie.set(["a", "b"], 1);
-  trie.set(["a", "b", "c"], 2);
-  trie.set(["a", "b", "c", "d"], 3);
+  trie.set(["a", "b"], 1).set(["a", "b", "c"], 2).set(["a", "b", "c", "d"], 3);
   const entries = [...trie.match(["a", "b", "c"])];
   assertEquals(entries.length, 2);
   assertEquals(entries[0], [["a", "b"], 1]);

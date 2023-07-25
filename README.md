@@ -185,7 +185,7 @@ key-value pairs.
 ### set
 
 ```typescript
-set(keys: K[], value: V): void
+set(keys: K[], value: V): this
 ```
 
 Inserts or updates a key-value pair in the trie.
