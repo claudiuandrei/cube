@@ -111,8 +111,7 @@ class FQueue<T> {
   }
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const order of this.#order) {
-      const [, v] = order;
+    for (const [, v] of this.#order) {
       yield* v;
     }
   }
