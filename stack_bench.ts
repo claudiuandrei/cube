@@ -1,6 +1,6 @@
 import Stack from "./stack.ts";
 
-const ITEM_COUNT = 1e6;
+const ITEM_COUNT = 1e5;
 
 // Benchmark the `push` method
 Deno.bench("stack push", () => {

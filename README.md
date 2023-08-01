@@ -54,6 +54,10 @@ Here's a snapshot of the main classes provided by the Cube library:
 8. **PubSub and Channel**: These classes facilitate the Publish-Subscribe
    messaging pattern, which is widely used in event-driven architectures.
 
+9. **BloomFilter**: This class implements a Bloom filter, a probabilistic data
+   structure that allows for fast membership queries, used in applications like
+   web browsers, databases, caching systems, and network routers.
+
 Each of these classes comes with thorough documentation, including interface
 details and usage examples.
 
@@ -1570,6 +1574,90 @@ Then, we publish a message to the channel, and the handler logs the message and
 the topic. After that, we unsubscribe from the channel. Finally, we create a new
 channel with a different topic, subscribe the same handler to the new channel,
 publish a message to the new channel, and unsubscribe from the new channel.
+
+# BloomFilter
+
+The `BloomFilter` class in this TypeScript file is an implementation of a Bloom
+filter. A Bloom filter is a data structure that can be used to test whether an
+element is a member of a set. It's a probabilistic data structure that provides
+fast membership queries and has a compact representation at the cost of some
+false positives.
+
+## Use Cases
+
+Bloom filters are used in various applications, including:
+
+- **Web browsers:** Used for safe browsing to check if a URL is in a list of
+  known malicious URLs.
+- **Databases:** Used to prevent unnecessary disk reads for non-existent rows or
+  documents.
+- **Caching systems:** Used to avoid expensive operations for items that aren't
+  in the cache.
+- **Network routers:** Used for packet routing to keep track of data that has
+  been previously seen.
+
+## Interface Documentation
+
+### Constructor
+
+```typescript
+constructor(size: number = 2 ** 16, entries?: readonly T[])
+```
+
+Creates a new `BloomFilter`. The `size` parameter determines the size of the
+Bloom filter, and the `entries` parameter is an optional array to initialize the
+Bloom filter.
+
+### add
+
+```typescript
+add(key: string): this
+```
+
+Adds an element to the Bloom filter. The `key` parameter is the element to add.
+
+### has
+
+```typescript
+has(key: string): boolean
+```
+
+Checks whether an element might be in the set. The `key` parameter is the
+element to check. Returns `true` if the element might be in the set, and `false`
+if the element is definitely not in the set.
+
+### hash
+
+```typescript
+#hash(key: string): number[]
+```
+
+Generates three different hash values for the given key. The `key` parameter is
+the key to hash. The hash functions used are `sdbm`, `djb2a`, and `fnv1a`.
+
+## Examples
+
+```typescript
+import BloomFilter from "./bloom";
+
+// Create a new BloomFilter instance
+const bloomFilter = new BloomFilter<string>();
+
+// Add elements to the filter
+bloomFilter.add("apple").add("banana").add("cherry");
+
+// Check if elements might be in the set
+console.log(bloomFilter.has("apple")); // Outputs: true
+console.log(bloomFilter.has("banana")); // Outputs: true
+console.log(bloomFilter.has("cherry")); // Outputs: true
+console.log(bloomFilter.has("durian")); // Outputs: false
+```
+
+In this example, we first create a `BloomFilter` and add some elements to it.
+Then, we check if these elements and an element not added to the filter might be
+in the set. Note that while a Bloom filter returns `true` if an element might be
+in the set, it always returns `false` if an element is definitely not in the
+set.
 
 ## License
 
