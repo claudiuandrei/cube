@@ -4,9 +4,10 @@ class LFU<K, V> {
   #store = new Map<K, V>();
   #queue = new FQueue<K>();
 
-  readonly maxSize: number;
-
-  constructor(maxSize: number, entries?: readonly (readonly [K, V])[] | null) {
+  constructor(
+    readonly maxSize: number,
+    entries?: readonly (readonly [K, V])[] | null,
+  ) {
     // We need to add it to the queue and store
     const data = entries?.slice(
       Math.max(entries.length - maxSize, 0),
@@ -15,7 +16,6 @@ class LFU<K, V> {
     // Setup the store and queue
     this.#store = new Map<K, V>(data);
     this.#queue = new FQueue<K>(data?.map(([key]) => key));
-    this.maxSize = maxSize;
   }
 
   set(key: K, value: V): this {

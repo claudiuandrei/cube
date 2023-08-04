@@ -21,15 +21,6 @@ Deno.bench("fqueue pop", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("fqueue clear", () => {
-  const fqueue = new FQueue<number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    fqueue.push(i);
-  }
-  fqueue.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("fqueue iteration", () => {
   const fqueue = new FQueue<number>();

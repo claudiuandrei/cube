@@ -22,15 +22,6 @@ Deno.bench("lfu get", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("lfu clear", () => {
-  const lfu = new LFU<number, number>(BUFFER_SIZE);
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    lfu.set(i, i);
-  }
-  lfu.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("lfu iteration", () => {
   const lfu = new LFU<number, number>(BUFFER_SIZE);

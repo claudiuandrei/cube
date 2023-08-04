@@ -44,15 +44,6 @@ Deno.bench("trie delete", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("trie clear", () => {
-  const trie = new Trie<number, number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    trie.set(generateKeys(i), i);
-  }
-  trie.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("trie iteration", () => {
   const trie = new Trie<number, number>();

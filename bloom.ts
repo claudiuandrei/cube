@@ -38,12 +38,8 @@ export function fnv1a(string: string): number {
 
 class BloomFilter<T extends string> {
   #storage: boolean[] = [];
-  readonly size: number;
 
-  constructor(size: number = 2 ** 16, entries?: readonly T[]) {
-    // Set the max size
-    this.size = size;
-
+  constructor(readonly size: number = 2 ** 16, entries?: readonly T[]) {
     // Initialize this by removing the first entries, they willbe evicted anyway
     if (entries == null) {
       return;

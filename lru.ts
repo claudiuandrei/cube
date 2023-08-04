@@ -1,11 +1,11 @@
 class LRU<K, V> extends Map<K, V> {
-  readonly maxSize: number;
-
-  constructor(maxSize: number, entries?: readonly (readonly [K, V])[] | null) {
+  constructor(
+    readonly maxSize: number,
+    entries?: readonly (readonly [K, V])[] | null,
+  ) {
     super(
       entries?.slice(Math.max(entries.length - maxSize, 0)),
     );
-    this.maxSize = maxSize;
   }
 
   get #head(): K {

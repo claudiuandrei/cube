@@ -21,15 +21,6 @@ Deno.bench("circular list pop", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("circular list clear", () => {
-  const list = new CircularList<number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    list.push(i);
-  }
-  list.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("circular list iteration", () => {
   const list = new CircularList<number>();

@@ -58,6 +58,13 @@ Here's a snapshot of the main classes provided by the Cube library:
    structure that allows for fast membership queries, used in applications like
    web browsers, databases, caching systems, and network routers.
 
+10. **QuadTree**: This class implements a quadtree, a tree data structure that
+    can be used to partition a two-dimensional space by recursively subdividing
+    it into four quadrants or regions, useful in applications like geographical
+    information systems (GIS), image processing, game development, computer
+    graphics, image recognition, spatial indexing, wireless networking,
+    geospatial data, and physics simulations.
+
 Each of these classes comes with thorough documentation, including interface
 details and usage examples.
 
@@ -65,6 +72,7 @@ details and usage examples.
 
 ```ts
 import {
+  BloomFilter,
   Buffer,
   Channel,
   CircularList,
@@ -74,6 +82,7 @@ import {
   LinkedList,
   LRU,
   PubSub,
+  QuadTree,
   Queue,
   Stack,
   Trie,
@@ -1658,6 +1667,191 @@ Then, we check if these elements and an element not added to the filter might be
 in the set. Note that while a Bloom filter returns `true` if an element might be
 in the set, it always returns `false` if an element is definitely not in the
 set.
+
+# QuadTree
+
+The `QuadTree` class in this TypeScript file is an implementation of a quadtree,
+a tree data structure in which each internal node has exactly four children:
+north-west, north-east, south-west and south-east. Quadtree can be used to
+partition a two-dimensional space by recursively subdividing it into four
+quadrants or regions.
+
+## Use Cases
+
+Quadtrees are used in various applications, including:
+
+- **Geographical Information Systems (GIS):** Quadtrees can be used to represent
+  spatial data like geographical coordinates, polygons, and points of interest.
+- **Image Processing:** They can be used for image compression, image
+  representation, and fast image processing operations.
+- **Game Development:** Quadtrees are commonly used in game development for
+  efficient collision detection, locating objects in a scene, and terrain
+  representation.
+- **Computer Graphics:** Quad trees can be used to partition a space in a way
+  that makes it easy to work with 2D graphics and perform operations like
+  collision detection and viewport culling.
+- **Image Recognition:** Quad trees can be used to process and analyze images,
+  particularly for hierarchical compression and fast segmentation of images.
+- **Spatial Indexing:** Quad trees are used to partition space into precise
+  quadrants which can be used to speed up the searching process.
+- **Wireless Networking:** In wireless networking, quad trees can help with the
+  efficient routing of data.
+- **Geospatial Data:** Quad trees can be used to store and navigate maps in a
+  GIS, or for storing spatial data like rectangles, points, and polygons which
+  are used in visualization, collision detection, and area selection.
+- **Physics Simulations:** In physics simulations, quad trees can be used to
+  handle two-dimensional collision detection by efficiently querying for pairs
+  of intersecting objects.
+
+## Interface Documentation
+
+### Functions
+
+#### createBox
+
+```typescript
+createBox(box: Box): (range: Box) => boolean
+```
+
+Returns a function that takes a `range` and checks if it intersects with the
+specified `box`.
+
+#### createCircle
+
+```typescript
+createCircle(circle: Circle): (range: Box) => boolean
+```
+
+Returns a function that takes a `range` and checks if it intersects with the
+specified `circle`.
+
+### Class: QuadTree
+
+#### Constructor
+
+```typescript
+constructor(bounds: Box, entries?: readonly [Point, T][])
+```
+
+Creates a new `QuadTree`. The `bounds` parameter specifies the boundary of the
+quadtree, and the `entries` parameter is an optional array of points and their
+associated data to initialize the quadtree.
+
+#### set
+
+```typescript
+set(point: Point, value: T): boolean
+```
+
+Inserts an element into the quadtree at a specific point. The `point` parameter
+is the point at which to insert, and the `value` parameter is the data to
+insert. Returns `true` if the insertion is successful, and `false` otherwise.
+
+#### has
+
+```typescript
+has(point: Point): boolean
+```
+
+Checks whether an element might be in the quadtree. The `point` parameter is the
+point to check. Returns `true` if the point might be in the quadtree, and
+`false` otherwise.
+
+#### get
+
+```typescript
+get(point: Point): T | undefined
+```
+
+Retrieves the data at a specific point in the quadtree. The `point` parameter is
+the point to retrieve. Returns the data if found, and `undefined` otherwise.
+
+#### delete
+
+```typescript
+delete(point: Point): boolean
+```
+
+Deletes the data at a specific point in the quadtree. The `point` parameter is
+the point to delete. Returns `true` if the deletion is successful, and `false`
+otherwise.
+
+### clear
+
+```typescript
+clear(): void
+```
+
+Removes all key-value pairs from the tree.
+
+#### list
+
+```typescript
+list(intersects: (range: Box) => boolean): IterableIterator<[Point, T]>
+```
+
+Returns an iterator that yields all points and their associated data in the
+quadtree that intersect with a specific range. The `intersects` parameter is a
+function that takes a range and returns `true` if it intersects with the desired
+range, and `false` otherwise.
+
+#### keys, values, entries
+
+```typescript
+keys(): IterableIterator<Point>
+values(): IterableIterator<T>
+entries(): IterableIterator<[Point, T]>
+```
+
+These methods return iterators that yield all points, all data, and all
+point-data pairs in the quadtree, respectively.
+
+#### forEach
+
+```typescript
+forEach(callbackFn: (value: T, point: Point, map: this) => void, thisArg?: unknown): void
+```
+
+Executes a provided function once for each point-data pair in the quadtree. The
+`callbackFn` parameter is the function to execute, and the `thisArg` parameter
+is the value to use as `this` when executing the function.
+
+## Examples
+
+```typescript
+import QuadTree, { createBox } from "./qtree";
+
+// Create a new QuadTree instance
+const quadTree = new QuadTree<string>({ x: 0, y: 0, width: 100, height: 100 });
+
+// Set data at specific points
+quadTree.set({ x: 10, y: 10 }, "point1");
+quadTree.set({ x: 20, y: 20 }, "point2");
+
+// Check if data might be in the quadtree
+console.log(quadTree.has({ x: 10, y: 10 })); // Outputs: true
+console.log(quadTree.has({ x: 30, y: 30 })); // Outputs: false
+
+// Get data at a specific point
+console.log(quadTree.get({ x: 10, y: 10 })); // Outputs: 'point1'
+console.log(quadTree.get({ x: 30, y: 30 })); // Outputs: undefined
+
+// Delete data at a specific point
+console.log(quadTree.delete({ x: 10, y: 10 })); // Outputs: true
+console.log(quadTree.delete({ x: 30, y: 30 })); // Outputs: false
+
+// List data in a specific range
+const range = { x: 0, y: 0, width: 50, height: 50 };
+const intersects = createBox(range);
+for (const [point, data] of quadTree.list(intersects)) {
+  console.log(`Point: ${point.x}, ${point.y}, Data: ${data}`);
+}
+```
+
+In this example, we first create a `QuadTree` and set some data at specific
+points. Then, we check if these points might be in the quadtree, get the data at
+these points, and delete the data at one of these points. Finally, we list all
+points and their associated data that intersect with a specific range.
 
 ## License
 

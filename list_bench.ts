@@ -28,15 +28,6 @@ Deno.bench("list delete", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("list clear", () => {
-  const list = new LinkedList<number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    list.append(i);
-  }
-  list.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("list iteration", () => {
   const list = new LinkedList<number>();

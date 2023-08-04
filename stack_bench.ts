@@ -21,15 +21,6 @@ Deno.bench("stack pop", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("stack clear", () => {
-  const stack = new Stack<number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    stack.push(i);
-  }
-  stack.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("stack iteration", () => {
   const stack = new Stack<number>();

@@ -21,15 +21,6 @@ Deno.bench("queue pop", () => {
   }
 });
 
-// Benchmark the `clear` method
-Deno.bench("queue clear", () => {
-  const queue = new Queue<number>();
-  for (let i = 0; i < ITEM_COUNT; i++) {
-    queue.push(i);
-  }
-  queue.clear();
-});
-
 // Benchmark the iteration
 Deno.bench("queue iteration", () => {
   const queue = new Queue<number>();
