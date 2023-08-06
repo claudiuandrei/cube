@@ -67,35 +67,32 @@ class QuadTree<T> {
       point.y <= y + height);
   }
 
-  #find(point: Point): [true, T] | [false] {
+  ref(point: Point): QuadTree<T> | undefined {
     // Nothing in the node
     if (this.#state == null) {
-      return [false];
+      return;
     }
 
     // Point out of boundary, can't find
     if (!this.#contains(point)) {
-      return [false];
+      return;
     }
 
     // We have data, but it is not subdivided
     const { isLeaf } = this.#state;
     if (isLeaf) {
-      return [true, this.#state.value];
+      return this;
     }
 
     const { nodes } = this.#state;
 
     // Find the data point
     for (const node of nodes) {
-      const [found, value] = node.#find(point);
-      if (found) {
-        return [found, value];
+      const ref = node.ref(point);
+      if (ref != null) {
+        return ref;
       }
     }
-
-    // Nothing found
-    return [false];
   }
 
   // Read only size
@@ -162,11 +159,38 @@ class QuadTree<T> {
   }
 
   has(point: Point): boolean {
-    return this.#find(point)[0];
+    const node = this.ref(point);
+
+    // Node not found
+    if (node == null) {
+      return false;
+    }
+
+    // Node is found and it is this node
+    if (node === this) {
+      return true;
+    }
+
+    // Check the new node recurseviely
+    return node.has(point);
   }
 
   get(point: Point): T | undefined {
-    return this.#find(point)[1];
+    const node = this.ref(point);
+
+    // Node not found
+    if (node == null) {
+      return;
+    }
+
+    // Node is found and it is this node
+    if (node === this) {
+      const state = this.#state!;
+      return (state.isLeaf) ? state.value : undefined;
+    }
+
+    // Check the new node recurseviely
+    return node.get(point);
   }
 
   delete(point: Point): boolean {
@@ -190,10 +214,8 @@ class QuadTree<T> {
 
     const { nodes } = this.#state;
 
-    // Insert the data into the correct node
-    const removed = nodes.some((node) => node.delete(point));
-
-    if (removed) {
+    // Remove the data from the nodes
+    if (nodes.some((node) => node.delete(point))) {
       // Update the size
       this.#size -= 1;
 
@@ -203,10 +225,12 @@ class QuadTree<T> {
         const [k, v] = node.entries().next().value;
         this.#state = { isLeaf: true, point: k, value: v };
       }
+
+      return true;
     }
 
     // Return the success status
-    return removed;
+    return false;
   }
 
   clear(): void {
@@ -263,7 +287,7 @@ class QuadTree<T> {
   }
 
   *entries(): IterableIterator<[Point, T]> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   forEach(

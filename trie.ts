@@ -1,86 +1,6 @@
-// Setup the node of the trie
-type Tree<K, V> = [Map<K, Tree<K, V>>, V?];
-
-// Breadth first traversal for the node that is returning an iterator
-/*
-function* bfs<K, V>(
-  node: Tree<K, V>,
-  prefix: K[],
-): IterableIterator<[K[], V]> {
-  const queue = new Queue<
-    [Tree<K, V>, K[]]
-  >([[node, prefix]]);
-
-  while (queue.size > 0) {
-    // A list of nodes, a value node maybe -> If value node, return the value
-    // Else go to the next node and find the node
-    const current = queue.pop();
-
-    // We are done, no more iterators
-    if (current == null) {
-      return;
-    }
-
-    // Get the current path/keys and node
-    const [[subtree, value], keys] = current;
-
-    for (const [k, v] of subtree) {
-      queue.push([v as Tree<K, V>, [...keys, k]]);
-    }
-
-    if (value !== undefined) {
-      yield [keys, value];
-    }
-  }
-}
-*/
-
-// Depth first traversal for the node that is returning an iterator
-function* dfs<K, V>(
-  node: Tree<K, V>,
-  prefix: K[],
-): IterableIterator<[K[], V]> {
-  const [subtree, value] = node;
-
-  if (value !== undefined) {
-    yield [prefix, value];
-  }
-
-  if (subtree.size === 0) {
-    return;
-  }
-
-  for (const [k, v] of subtree) {
-    yield* dfs(v, prefix.concat(k));
-  }
-}
-
-// Traverse node by path
-function* traverse<K, V>(
-  node: Tree<K, V>,
-  keys: K[],
-  index = 0,
-): IterableIterator<[K[], V]> {
-  // We are done once we reach the end of the keys
-  if (index > keys.length) {
-    return;
-  }
-
-  // Load the data from the node
-  const [subtree, value] = node;
-
-  if (value !== undefined) {
-    yield [keys.slice(0, index), value];
-  }
-
-  const k = keys[index];
-  if (subtree.has(k)) {
-    yield* traverse(subtree.get(k)!, keys, index + 1);
-  }
-}
-
 class Trie<K, V> {
-  #head: Tree<K, V> = [new Map()];
+  #value: [false] | [true, V] = [false];
+  #nodes: Map<K, Trie<K, V>> = new Map();
   #size = 0;
 
   constructor(entries?: readonly [K[], V][]) {
@@ -91,121 +11,154 @@ class Trie<K, V> {
     }
   }
 
-  // Helper function to find the node based on a path
-  #find(keys: K[]): Tree<K, V> | undefined {
-    let node = this.#head;
-
-    // Iterate over the keys
-    for (const key of keys) {
-      // Load the subtree
-      const [subtree] = node;
-
-      // Get the child node
-      if (!subtree.has(key)) {
-        return undefined;
-      }
-
-      // Go to the next level
-      node = subtree.get(key)!;
+  ref(keys: K[]): Trie<K, V> | undefined {
+    // Root value
+    if (keys.length === 0) {
+      return this;
     }
 
-    return node;
+    // Get the first key
+    const [key, ...rest] = keys;
+
+    // Create the leaf if it doesn't exist
+    if (!this.#nodes.has(key)) {
+      return;
+    }
+
+    // Get the node
+    const node = this.#nodes.get(key)!;
+
+    // Find the next
+    return node.ref(rest);
   }
 
   set(keys: K[], value: V): this {
-    // Start at the head
-    let node = this.#head;
+    // Root value
+    if (keys.length === 0) {
+      // Check if the value was already set
+      const [isSet] = this.#value;
 
-    // Iterate over the keys to find the node where to insert
-    for (const key of keys) {
-      // Load the subtree
-      const [subtree] = node;
+      // Set the value
+      this.#value = [true, value];
 
-      // Create a child node if we don't have one
-      if (!subtree.has(key)) {
-        subtree.set(key, [new Map()]);
+      // Increase the size if it wasn't set
+      if (!isSet) {
+        this.#size++;
       }
 
-      // Go to the next level
-      node = subtree.get(key)!;
+      // Chain
+      return this;
     }
 
-    // If this is new, we increase the size
-    if (node[1] === undefined) {
-      this.#size++;
+    // Get the first key
+    const [key, ...rest] = keys;
+
+    // Create the leaf if it doesn't exist
+    if (!this.#nodes.has(key)) {
+      this.#nodes.set(key, new Trie());
     }
 
-    // Set the value on the value
-    node[1] = value;
+    // Get the node
+    const node = this.#nodes.get(key)!;
+
+    // Get the old size
+    const oldSize = node.size;
+
+    // Set the value on the node
+    node.set(rest, value);
+
+    // Update the size
+    this.#size += node.size - oldSize;
 
     // Chain
     return this;
   }
 
   get(keys: K[]): V | undefined {
-    // Start at the head
-    const node = this.#find(keys);
+    // Get the node
+    const node = this.ref(keys);
 
-    // Get the value from the node
-    return node?.[1];
+    // Node was not found
+    if (node === undefined) {
+      return;
+    }
+
+    // Found the value, get it
+    if (node === this) {
+      return this.#value[1];
+    }
+
+    // Check the node recursively
+    return node.get([]);
   }
 
   has(keys: K[]): boolean {
-    return this.get(keys) !== undefined;
+    // Get the node
+    const node = this.ref(keys);
+
+    // Node was not found
+    if (node === undefined) {
+      return false;
+    }
+
+    // Found the value, get it
+    if (node === this) {
+      return this.#value[0];
+    }
+
+    // Check the node recursively
+    return node.has([]);
   }
 
   delete(keys: K[]): boolean {
-    // Start at the head
-    let node = this.#head;
+    // Root value
+    if (keys.length === 0) {
+      const [isSet] = this.#value;
 
-    // Create a clean function
-    // We start witht the assumption we need to remove everything
-    let clean = () => {
-      node[0].clear();
-    };
-
-    // Iterate over the keys
-    for (const key of keys) {
-      // Load the subtree
-      const [subtree, value] = node;
-
-      // Get the child node
-      if (!subtree.has(key)) {
-        return false;
+      // Delete the value if set
+      if (isSet) {
+        this.#value = [false];
+        this.#size--;
+        return true;
       }
 
-      // Check if the current subtree contains any other data
-      const stale = subtree.size === 1 && value === undefined;
+      // Nothing to do if not set
+      return false;
+    }
 
-      // If we have other info, we update the assumption, only remove the key subtree
-      if (!stale) {
-        clean = () => {
-          subtree.delete(key);
-        };
+    // Get the first key
+    const [key, ...rest] = keys;
+
+    // Get the node
+    const node = this.#nodes.get(key);
+
+    // Nothing to do if not found
+    if (node === undefined) {
+      return false;
+    }
+
+    // Attept to delete the node
+    if (node.delete(rest)) {
+      // Reduce the size
+      this.#size--;
+
+      // Delete the node if it's empty
+      if (node.size === 0) {
+        this.#nodes.delete(key);
       }
 
-      // Go to the next level
-      node = subtree.get(key)!;
+      // We deleted it
+      return true;
     }
 
-    // Get the value from the node
-    node[1] = undefined;
-
-    // Reduce the size
-    this.#size--;
-
-    // Clean only if this is empty
-    if (node[0].size === 0) {
-      clean();
-    }
-
-    // We deleted it
-    return true;
+    // We didn't delete it
+    return false;
   }
 
   clear(): void {
-    this.#head = [new Map()];
+    this.#value = [false];
     this.#size = 0;
+    this.#nodes.clear();
   }
 
   get size(): number {
@@ -215,24 +168,58 @@ class Trie<K, V> {
   // This method will get all the values that partially match the path
   // eg. ancestor nodes plus the current node
   *match(keys: K[]): IterableIterator<[K[], V]> {
-    yield* traverse(this.#head, keys);
+    // Root value
+    const [isSet, value] = this.#value;
+
+    // Get the value if set
+    if (isSet) {
+      yield [[], value];
+    }
+
+    // Get the first key
+    const [key, ...rest] = keys;
+
+    // Get the node
+    const node = this.#nodes.get(key);
+
+    // Nothing to do if no node
+    if (node === undefined) {
+      return;
+    }
+
+    // Match next layers
+    for (const [k, v] of node.match(rest)) {
+      yield [[key, ...k], v];
+    }
   }
 
   // This will get all the values starting with the path,
   // eg. descendant nodes plus the current node
   *list(keys: K[]): IterableIterator<[K[], V]> {
-    // Find the node
-    const node = this.#find(keys);
+    // Find the root node based on the keys
+    const node = this.ref(keys);
 
+    // Nothing to do if no node
     if (node === undefined) {
       return;
     }
 
-    yield* dfs(node, keys);
+    // Traverse the node once found
+    yield* node;
   }
 
   *[Symbol.iterator](): IterableIterator<[K[], V]> {
-    yield* this.list([]);
+    // Get the value of the node if there is one
+    if (this.has([])) {
+      yield [[], this.get([])!];
+    }
+
+    // Traverse the other nodes
+    for (const [key, node] of this.#nodes) {
+      for (const [k, v] of node) {
+        yield [[key, ...k], v];
+      }
+    }
   }
 
   *keys(): IterableIterator<K[]> {
@@ -248,7 +235,7 @@ class Trie<K, V> {
   }
 
   *entries(): IterableIterator<[K[], V]> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   forEach(

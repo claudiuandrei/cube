@@ -69,7 +69,7 @@ class LFU<K, V> {
   }
 
   *keys(): IterableIterator<K> {
-    yield* this.#queue[Symbol.iterator]();
+    yield* this.#queue;
   }
 
   *values(): IterableIterator<V> {
@@ -79,7 +79,7 @@ class LFU<K, V> {
   }
 
   *entries(): IterableIterator<[K, V]> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   forEach(

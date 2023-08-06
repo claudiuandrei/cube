@@ -95,11 +95,11 @@ class CircularList<T> {
   }
 
   *keys(): IterableIterator<T> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   *values(): IterableIterator<T> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   *entities(): IterableIterator<[T, T]> {

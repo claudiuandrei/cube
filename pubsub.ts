@@ -38,23 +38,20 @@ class PubSub<K, V> {
     // Send the bufferedd data
     this.#buffer.forEach(([topic, context]) => handler(context, topic));
 
-    // Attach the handler
-    if (!this.#handlers.has(topic)) {
-      this.#handlers.set(topic, new Set());
-    }
+    // Get he handlers for the topic
+    const current = this.#handlers.get(topic);
+    const handlers = current ?? new Set();
 
-    // Attach the handler
-    this.#handlers.get(topic)!.add(h);
+    // Add the handler
+    handlers.add(h);
+
+    // Store it needed
+    if (current == null) {
+      this.#handlers.set(topic, handlers);
+    }
 
     // Unsubscribe
     return () => {
-      // Load the handlers
-      const handlers = this.#handlers.get(topic);
-
-      // Nothing to remove
-      if (handlers == null) {
-        return;
-      }
       // Remove the handler
       handlers.delete(h);
 

@@ -10,8 +10,11 @@ import LFU from "./lfu.ts";
 import LRU from "./lru.ts";
 import PubSub from "./pubsub.ts";
 import Channel from "./channel.ts";
+import QuadTree from "./qtree.ts";
+import BloomFilter from "./bloom.ts";
 
 export {
+  BloomFilter,
   Buffer,
   Channel,
   CircularList,
@@ -21,6 +24,7 @@ export {
   LinkedList,
   LRU,
   PubSub,
+  QuadTree,
   Queue,
   Stack,
   Trie,

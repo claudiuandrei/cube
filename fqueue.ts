@@ -117,11 +117,11 @@ class FQueue<T> {
   }
 
   *keys(): IterableIterator<T> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   *values(): IterableIterator<T> {
-    yield* this[Symbol.iterator]();
+    yield* this;
   }
 
   *entries(): IterableIterator<[T, T]> {
