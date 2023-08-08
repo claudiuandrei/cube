@@ -2,7 +2,7 @@
 // Using an Array for the implementation as they are fast and easy to use for this usecase
 // The interface is iterable and consistent with the other data structures
 
-class Stack<T> {
+class Stack<T> implements Iterable<T> {
   #store: T[] = [];
 
   constructor(entries?: readonly T[]) {

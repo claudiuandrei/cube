@@ -1,4 +1,4 @@
-class Trie<K, V> {
+class Trie<K, V> implements Iterable<[K[], V]> {
   #value: [false] | [true, V] = [false];
   #nodes: Map<K, Trie<K, V>> = new Map();
   #size = 0;

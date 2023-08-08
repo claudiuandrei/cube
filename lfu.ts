@@ -1,6 +1,6 @@
 import FQueue from "./fqueue.ts";
 
-class LFU<K, V> {
+class LFU<K, V> implements Iterable<[K, V]> {
   #store = new Map<K, V>();
   #queue = new FQueue<K>();
 

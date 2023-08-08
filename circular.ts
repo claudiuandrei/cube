@@ -1,6 +1,6 @@
 export type Node<T> = { next: Node<T>; value: T };
 
-class CircularList<T> {
+class CircularList<T> implements Iterable<T> {
   #size = 0;
   #cursor?: Node<T>;
 

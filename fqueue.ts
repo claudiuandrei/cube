@@ -4,7 +4,7 @@ import LinkedList from "./list.ts";
 
 type F<T> = [number, Set<T>];
 
-class FQueue<T> {
+class FQueue<T> implements Iterable<T> {
   #order = new LinkedList<F<T>>();
   #store = new Map<T, Ref>();
 

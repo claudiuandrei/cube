@@ -10,7 +10,7 @@ export type Node<T> = {
   value: T;
 };
 
-class LinkedList<T> {
+class LinkedList<T> implements Iterable<T> {
   #head?: Ref;
   #tail?: Ref;
   #store: Map<Ref, Node<T>> = new Map();

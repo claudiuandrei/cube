@@ -44,7 +44,7 @@ export function createCircle(circle: Circle) {
   };
 }
 
-class QuadTree<T> {
+class QuadTree<T> implements Iterable<[Point, T]> {
   #state?: { isLeaf: true; point: Point; value: T } | {
     isLeaf: false;
     nodes: Quads<T>;
